@@ -1,64 +1,80 @@
-import { Request, Response } from 'express';
+import { RequestHandler } from 'express';
 import { MenuService } from '../services/MenuService';
-import { RequestHandler } from 'express-serve-static-core';
+import {
+  respondWithError,
+  respondWithSuccess,
+  respondWithoutContent,
+} from '../utils/response';
+import { MESSAGES } from '../constants/messages';
+import { AppError } from '../errors/AppError';
 
 export class MenuController {
   constructor(private service: MenuService) {}
 
-  getAll = async (req: Request, res: Response) => {
+  getAll: RequestHandler = async (_req, res) => {
     const items = await this.service.getAll();
-    res.json(items);
+    respondWithSuccess(res, items);
   };
 
   getById: RequestHandler = async (req, res) => {
     const id = Number(req.params.id);
-  
     if (isNaN(id)) {
-      res.status(400).json({ error: 'ID inválido' });
+      respondWithError(res, 400, MESSAGES.INVALID_ID);
       return;
     }
-  
-    const item = await this.service.getById(id);
-  
-    if (!item) {
-      res.status(404).json({ error: 'Item não encontrado' });
-      return;
-    }
-  
-    res.json(item);
-  };
-  
-  
 
-  create = async (req: Request, res: Response) => {
+    const item = await this.service.getById(id);
+    if (!item) {
+      throw new AppError(MESSAGES.ITEM_NOT_FOUND, 404);
+    }
+
+    respondWithSuccess(res, item);
+  };
+
+  create: RequestHandler = async (req, res) => {
     try {
       const item = await this.service.create(req.body);
-      res.status(201).json(item);
+      respondWithSuccess(res, item, 201);
     } catch (error) {
       console.error('Erro ao criar item do cardápio:', error);
-      res.status(500).json({ error: 'Erro ao criar item' });
+      respondWithError(res, 500, MESSAGES.INTERNAL_SERVER_ERROR);
     }
   };
 
-  update = async (req: Request, res: Response) => {
+  update: RequestHandler = async (req, res) => {
     try {
       const id = Number(req.params.id);
-  
       if (isNaN(id)) {
-        return res.status(400).json({ error: 'ID inválido' });
+        respondWithError(res, 400, MESSAGES.INVALID_ID);
+        return;
       }
-  
+
       const item = await this.service.update(id, req.body);
-  
       if (!item) {
-        return res.status(404).json({ error: 'Item não encontrado' });
+        respondWithError(res, 404, MESSAGES.ITEM_NOT_FOUND);
+        return;
       }
-  
-      res.json(item);
+
+      respondWithSuccess(res, item);
     } catch (error) {
       console.error('Erro ao atualizar item do cardápio:', error);
-      res.status(500).json({ error: 'Erro ao atualizar item' });
+      respondWithError(res, 500, MESSAGES.INTERNAL_SERVER_ERROR);
     }
   };
-  
+
+  delete: RequestHandler = async (req, res) => {
+    try {
+      const id = Number(req.params.id);
+      if (isNaN(id)) {
+        respondWithError(res, 400, MESSAGES.INVALID_ID);
+        return;
+      }
+
+      await this.service.delete(id);
+      respondWithoutContent(res);
+    } catch (error) {
+      console.error('Erro ao excluir item do cardápio:', error);
+      respondWithError(res, 500, MESSAGES.INTERNAL_SERVER_ERROR);
+    }
+  };
 }

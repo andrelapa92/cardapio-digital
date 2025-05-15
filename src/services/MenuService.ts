@@ -28,4 +28,8 @@ export class MenuService {
     return this.repository.update(id, data);
   }
 
+  async delete(id: number) {
+    return this.repository.delete(id);
+  }
+
 }

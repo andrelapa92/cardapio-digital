@@ -32,4 +32,9 @@ export class MenuRepository {
     return item;
   }
 
+  async delete(id: number): Promise<void> {
+    const item = await MenuItem.findByPk(id);
+    if (item) await item.destroy();
+  }
+
 }
