@@ -7,6 +7,8 @@ import {
 } from '../utils/response';
 import { MESSAGES } from '../constants/messages';
 import { AppError } from '../errors/AppError';
+import { CreateMenuItemDTO } from '../dtos/CreateMenuItemDTO';
+import { UpdateMenuItemDTO } from '../dtos/UpdateMenuItemDTO';
 
 export class MenuController {
   constructor(private service: MenuService) {}
@@ -33,7 +35,14 @@ export class MenuController {
 
   create: RequestHandler = async (req, res) => {
     try {
-      const item = await this.service.create(req.body);
+      const data = req.body as CreateMenuItemDTO;
+
+      if (!data.name || data.price === undefined) {
+        respondWithError(res, 400, 'Nome e preço são obrigatórios');
+        return;
+      }
+
+      const item = await this.service.create(data);
       respondWithSuccess(res, item, 201);
     } catch (error) {
       console.error('Erro ao criar item do cardápio:', error);
@@ -49,7 +58,9 @@ export class MenuController {
         return;
       }
 
-      const item = await this.service.update(id, req.body);
+      const data = req.body as UpdateMenuItemDTO;
+
+      const item = await this.service.update(id, data);
       if (!item) {
         respondWithError(res, 404, MESSAGES.ITEM_NOT_FOUND);
         return;

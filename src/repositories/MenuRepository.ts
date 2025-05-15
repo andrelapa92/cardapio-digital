@@ -13,7 +13,8 @@ export class MenuRepository {
 
   async create(data: CreateMenuItemDTO): Promise<MenuItem> {
     return MenuItem.create({
-      ...data,
+      name: data.name,
+      price: data.price,
       description: data.description ?? null,
       category: data.category ?? null,
     });
@@ -24,9 +25,12 @@ export class MenuRepository {
     if (!item) return null;
 
     await item.update({
-      ...data,
-      description: data.description ?? null,
-      category: data.category ?? null,
+      name: data.name ?? item.name,
+      price: data.price ?? item.price,
+      description:
+        data.description !== undefined ? data.description : item.description,
+      category:
+        data.category !== undefined ? data.category : item.category,
     });
 
     return item;
@@ -34,7 +38,8 @@ export class MenuRepository {
 
   async delete(id: number): Promise<void> {
     const item = await MenuItem.findByPk(id);
-    if (item) await item.destroy();
+    if (item) {
+      await item.destroy();
+    }
   }
-
 }

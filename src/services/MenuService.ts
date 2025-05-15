@@ -1,11 +1,7 @@
 import { MenuRepository } from '../repositories/MenuRepository';
-
-interface CreateMenuItemDTO {
-  name: string;
-  description?: string;
-  price: number;
-  category?: string;
-}
+import { MenuItem } from '../models/MenuItem';
+import { CreateMenuItemDTO } from '../dtos/CreateMenuItemDTO';
+import { UpdateMenuItemDTO } from '../dtos/UpdateMenuItemDTO';
 
 export class MenuService {
   constructor(private repository: MenuRepository) {}
@@ -19,17 +15,28 @@ export class MenuService {
   }
 
   async create(data: CreateMenuItemDTO) {
-    // Adicionar validações aqui
+    // Você pode adicionar validações aqui
     return this.repository.create(data);
   }
 
-  async update(id: number, data: CreateMenuItemDTO) {
-    // Adicionar validações aqui
-    return this.repository.update(id, data);
+  async update(id: number, data: UpdateMenuItemDTO): Promise<MenuItem | null> {
+    const item = await this.repository.findById(id);
+    if (!item) {
+      return null;
+    }
+
+    // Faz merge dos dados antigos com os novos usando os campos do DTO
+    await item.update({
+      name: data.name ?? item.name,
+      price: data.price ?? item.price,
+      category: data.category ?? item.category,
+      description: data.description ?? item.description,
+    });
+
+    return item;
   }
 
   async delete(id: number) {
     return this.repository.delete(id);
   }
-
 }
