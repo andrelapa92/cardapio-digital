@@ -44,4 +44,10 @@ export class MenuItem extends Model<
     allowNull: true,
   })
   category?: string | null;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  image_url?: string | null
 }

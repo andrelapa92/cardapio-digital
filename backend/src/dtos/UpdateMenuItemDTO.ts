@@ -3,5 +3,6 @@ export interface UpdateMenuItemDTO {
     price?: number;
     description?: string;
     category?: string;
+    image_url?: string;
 }
   

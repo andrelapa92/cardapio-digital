@@ -16,6 +16,7 @@ export class MenuRepository {
       name: data.name,
       price: data.price,
       description: data.description ?? null,
+      image_url: data.image_url ?? null,
       category: data.category ?? null,
     });
   }
