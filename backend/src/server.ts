@@ -1,13 +1,13 @@
 import app from './app';
 import { sequelize } from './config/database';
 
-const PORT = process.env.PORT || 3000;
+const PORT = Number(process.env.PORT) || 3000;
 
 (async () => {
   try {
     await sequelize.sync(); // Cria as tabelas se não existirem
     console.log('DB conectado e sincronizado');
-    app.listen(PORT, () => {
+    app.listen(PORT, '0.0.0.0', () => {
       console.log(`Servidor rodando na porta ${PORT}`);
     });
   } catch (error) {

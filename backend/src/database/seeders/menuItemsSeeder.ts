@@ -12,24 +12,28 @@ async function seedMenuItems() {
         description: 'Pão, carne, queijo e alface',
         price: 25.90,
         category: 'Lanches',
+        image_url: 'http://localhost:3000/images/hamburguer-classico.png',
       },
       {
         name: 'Pizza Margherita',
         description: 'Molho de tomate, mussarela e manjericão',
         price: 39.90,
         category: 'Pizzas',
+        image_url: 'http://localhost:3000/images/pizza-margherita.png',
       },
       {
         name: 'Suco de Laranja',
         description: 'Natural, sem açúcar',
         price: 7.00,
         category: 'Bebidas',
+        image_url: 'http://localhost:3000/images/suco-laranja.png',
       },
       {
         name: 'Salada Caesar',
         description: 'Alface, frango grelhado, parmesão e croutons',
         price: 18.50,
         category: 'Saladas',
+        image_url: 'http://localhost:3000/images/salada-caesar.png',
       },
     ];
 
