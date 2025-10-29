@@ -12,9 +12,7 @@ services:
       - pgdata:/var/lib/postgresql/data
 
   backend:
-    build: 
-      context: ./backend
-      dockerfile: Dockerfile
+    build: ./backend
     container_name: backend-cardapio
     depends_on:
       - db
@@ -29,7 +27,7 @@ services:
     volumes:
       - ./backend:/app
       - /app/node_modules
-    command: npx ts-node-dev --respawn --transpile-only src/server.ts
+    command: ["sh", "-c", "wait-for-it db:5432 -- npx ts-node-dev --respawn --transpile-only src/server.ts"]
 
   frontend:
     build:
@@ -37,13 +35,9 @@ services:
       dockerfile: Dockerfile
     container_name: frontend-cardapio
     ports:
-      - "5173:5173"
+      - "8080:80"
     depends_on:
       - backend
-    command: npm run dev -- --host 0.0.0.0
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
 
 volumes:
   pgdata:

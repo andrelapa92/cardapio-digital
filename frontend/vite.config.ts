@@ -4,6 +4,7 @@ import vuetify from 'vite-plugin-vuetify'
 import path from 'path'
 
 export default defineConfig({
+  base: './', // importante para Nginx
   plugins: [
     vue(),
     vuetify({ autoImport: true }),
